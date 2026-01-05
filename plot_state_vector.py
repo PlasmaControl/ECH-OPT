@@ -52,7 +52,8 @@ except:
     EOXBEST['data'] += np.random.randn(20, NGYROS, NYOUT_PTS) * 0.01
     
 print('Source shot:', shot)
-print('Raw size of yout:', EOXBEST['data'].shape)
+print('Raw size of EOXBEST:', EOXBEST['data'].shape)
+print('Raw size of EOXTARGET:', EOXTARGET['data'].shape)
 
 # Reshape data arrays
 EOXBEST['data'] = EOXBEST['data'].reshape(-1, NGYROS, NYOUT_PTS)
