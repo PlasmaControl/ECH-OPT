@@ -8,6 +8,7 @@
 # If needed, run pip install pyqtgraph
 
 import sys
+import argparse
 import toksearch
 import numpy as np
 import pyqtgraph as pg
@@ -15,8 +16,14 @@ from pyqtgraph.Qt import QtWidgets, QtCore
 
 
 
+# CLI
+parser = argparse.ArgumentParser(description="ECH profile viewer")
+parser.add_argument("--shot", type=int, default=205797,
+                    help="Shot number (default: 205797)")
+args = parser.parse_args()
+
 # Constants and parameters
-shot = 205796
+shot = args.shot
 NYOUT_PTS = 101
 NGYROS = 11
 PLOT_GYROS = [4, 5, 8, 9, 11]  # Gyros to plot individually (1-based indexing)
@@ -82,8 +89,8 @@ layout.addWidget(graphics_layout)
 
 # Create first plot: Total profile vs Target
 plot1 = graphics_layout.addPlot(row=0, col=0, title="Total Profile vs Target")
-plot1.setLabel('left', 'Power Density')
-plot1.setLabel('bottom', 'Normalized Psi')
+plot1.setLabel('left', r'Power Density ($MW/m^3$)')
+plot1.setLabel('bottom', r'$\Psi_N$')
 plot1.setYRange(0, 2)
 plot1.addLegend()
 
@@ -93,8 +100,8 @@ curve_target = plot1.plot(pen=pg.mkPen('r', width=2, style=QtCore.Qt.DashLine), 
 
 # Create second plot: Individual gyrotron contributions
 plot2 = graphics_layout.addPlot(row=1, col=0, title="Individual Gyrotron Contributions")
-plot2.setLabel('left', 'Power Density')
-plot2.setLabel('bottom', 'Normalized Psi')
+plot2.setLabel('left', r'Power Density ($MW/m^3$)')
+plot2.setLabel('bottom', r'$\Psi_N$')
 plot2.setYRange(0, 1)
 plot2.addLegend()
 
