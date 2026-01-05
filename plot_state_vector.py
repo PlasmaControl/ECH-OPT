@@ -29,8 +29,9 @@ except:
     # Dummy target if not found
     EOXTARGET = {'data': np.ones((20, NYOUT_PTS)),
                  'times': np.linspace(0, 1, 20)}  
-    for i in range(20):
-        EOXTARGET['data'][i,:] *= (np.random.randn(1) + 0.5)
+    scales = np.linspace(0, 1, 20)
+    for i, scale in enumerate(scales):
+        EOXTARGET['data'][i,:] *= scale
 
 try:
     EOXBEST = toksearch.PtDataSignal('EOXBEST').fetch(shot)
