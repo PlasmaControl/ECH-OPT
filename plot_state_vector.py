@@ -27,7 +27,7 @@ try:
     EOXTARGET = toksearch.PtDataSignal('EOXTARGET').fetch(shot)
 except:
     # Dummy target if not found
-    EOXTARGET = {'data': np.ones((20, NYOUT_PTS)) * 1e6,
+    EOXTARGET = {'data': np.ones((20, NYOUT_PTS)),
                  'times': np.linspace(0, 1, 20)}  
     for i in range(20):
         EOXTARGET['data'][i,:] *= (np.random.randn(1) + 0.5)
@@ -36,9 +36,9 @@ try:
     EOXBEST = toksearch.PtDataSignal('EOXBEST').fetch(shot)
 except:
     # Dummy best if not found
-    EOXBEST = {'data':  1.1*np.ones((20, NGYROS, NYOUT_PTS)) * 1e5,
+    EOXBEST = {'data':  1.1*np.ones((20, NGYROS, NYOUT_PTS)) * 0.1,
                'times': np.linspace(0, 1, 20)}  
-    EOXBEST['data'] += np.random.randn(20, NGYROS, NYOUT_PTS) * 1e4
+    EOXBEST['data'] += np.random.randn(20, NGYROS, NYOUT_PTS) * 0.01
     
 print('Source shot:', shot)
 print('Raw size of yout:', EOXBEST['data'].shape)
@@ -133,12 +133,12 @@ slider_layout.addWidget(index_label)
 def update_plots(idx):
     """Update plots based on slider value"""
     # Update plot 1: total vs target
-    curve_total.setData(psin, total_profile[idx, :] / 1e6)
-    curve_target.setData(psin, EOXTARGET['data'][idx, :] / 1e6)
+    curve_total.setData(psin, total_profile[idx, :])
+    curve_target.setData(psin, EOXTARGET['data'][idx, :])
     
     # Update plot 2: individual gyrotron contributions
     for i, igyro in enumerate(PLOT_GYROS):
-        gyro_curves[i].setData(psin, EOXBEST['data'][idx, igyro-1, :] / 1e6)
+        gyro_curves[i].setData(psin, EOXBEST['data'][idx, igyro-1, :])
     
     # Update labels
     time_label.setText(f"Time: {timeslices[idx]:.4f} s")
