@@ -28,13 +28,15 @@ except:
     # Dummy target if not found
     EOXTARGET = {'data': np.ones((20, NYOUT_PTS)) * 1e6,
                  'times': np.linspace(0, 1, 20)}  
+    EOXTARGET['data'] += np.random.randn(20) * 1e5
 
 try:
     EOXBEST = toksearch.PtDataSignal('EOXBEST').fetch(shot)
 except:
     # Dummy best if not found
-    EOXBEST = {'data': 1.1 * np.ones((20, NGYROS, NYOUT_PTS)) * 1e6,
+    EOXBEST = {'data':  1.1*np.ones((20, NGYROS, NYOUT_PTS)) * 1e6,
                'times': np.linspace(0, 1, 20)}  
+    EOXBEST['data'] += np.random.randn(20, NGYROS) * 1e5
     
 print('Source shot:', shot)
 print('Raw size of yout:', EOXBEST['data'].shape)
@@ -57,6 +59,10 @@ for igyro in range(NGYROS):
 
 # Create PyQtGraph application
 app = QtWidgets.QApplication(sys.argv)
+
+# Set white background
+pg.setConfigOption('background', 'w')
+pg.setConfigOption('foreground', 'k')
 
 # Create main window
 win = QtWidgets.QWidget()
