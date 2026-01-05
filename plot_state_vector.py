@@ -29,10 +29,12 @@ NGYROS = 11
 PLOT_GYROS = [4, 5, 8, 9, 11]  # Gyros to plot individually (1-based indexing)
 psin = np.linspace(0, 1.0, NYOUT_PTS)
 
+dummy = False
 
 try:
     EOXTARGET = toksearch.PtDataSignal('EOXTARGET').fetch(shot)
 except:
+    dummy = True
     # Dummy target if not found
     EOXTARGET = {'data': np.ones((20, NYOUT_PTS)),
                  'times': np.linspace(0, 1, 20)}  
@@ -43,6 +45,7 @@ except:
 try:
     EOXBEST = toksearch.PtDataSignal('EOXBEST').fetch(shot)
 except:
+    dummy = True
     # Dummy best if not found
     EOXBEST = {'data':  1.1*np.ones((20, NGYROS, NYOUT_PTS)) * 0.1,
                'times': np.linspace(0, 1, 20)}  
@@ -76,7 +79,10 @@ pg.setConfigOption('foreground', 'k')
 
 # Create main window
 win = QtWidgets.QWidget()
-win.setWindowTitle('ECH Profile Viewer')
+if dummy:
+    win.setWindowTitle(f'ECH Profile Viewer - (Dummy Data)')
+else:
+    win.setWindowTitle(f'ECH Profile Viewer - Shot {shot}')
 win.resize(1200, 800)
 
 # Create layout
