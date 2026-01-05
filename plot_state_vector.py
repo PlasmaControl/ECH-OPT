@@ -19,6 +19,7 @@ from pyqtgraph.Qt import QtWidgets, QtCore
 shot = 205796
 NYOUT_PTS = 101
 NGYROS = 11
+PLOT_GYROS = [4, 5, 8, 9, 11]  # Gyros to plot individually (1-based indexing)
 psin = np.linspace(0, 1.0, NYOUT_PTS)
 
 
@@ -35,9 +36,9 @@ try:
     EOXBEST = toksearch.PtDataSignal('EOXBEST').fetch(shot)
 except:
     # Dummy best if not found
-    EOXBEST = {'data':  1.1*np.ones((20, NGYROS, NYOUT_PTS)) * 1e6,
+    EOXBEST = {'data':  1.1*np.ones((20, NGYROS, NYOUT_PTS)) * 1e5,
                'times': np.linspace(0, 1, 20)}  
-    EOXBEST['data'] += np.random.randn(20, NGYROS, NYOUT_PTS) * 1e5
+    EOXBEST['data'] += np.random.randn(20, NGYROS, NYOUT_PTS) * 1e4
     
 print('Source shot:', shot)
 print('Raw size of yout:', EOXBEST['data'].shape)
@@ -82,6 +83,7 @@ layout.addWidget(graphics_layout)
 plot1 = graphics_layout.addPlot(row=0, col=0, title="Total Profile vs Target")
 plot1.setLabel('left', 'Power Density')
 plot1.setLabel('bottom', 'Normalized Psi')
+plot1.setYRange(0, 2)
 plot1.addLegend()
 
 # Curves for plot1
@@ -92,14 +94,16 @@ curve_target = plot1.plot(pen=pg.mkPen('r', width=2, style=QtCore.Qt.DashLine), 
 plot2 = graphics_layout.addPlot(row=1, col=0, title="Individual Gyrotron Contributions")
 plot2.setLabel('left', 'Power Density')
 plot2.setLabel('bottom', 'Normalized Psi')
+plot2.setYRange(0, 1)
+plot2.addLegend()
 
 # Create curves for each gyrotron
 gyro_curves = []
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', 
           '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#aec7e8']
-for igyro in range(NGYROS):
-    curve = plot2.plot(pen=pg.mkPen(colors[igyro % len(colors)], width=1.5), 
-                       name=f'Gyro {igyro+1}')
+for igyro in PLOT_GYROS:
+    curve = plot2.plot(pen=pg.mkPen(colors[(igyro-1) % len(colors)], width=1.5), 
+                       name=f'Gyro {igyro}')
     gyro_curves.append(curve)
 
 # Create slider widget
@@ -133,8 +137,8 @@ def update_plots(idx):
     curve_target.setData(psin, EOXTARGET['data'][idx, :])
     
     # Update plot 2: individual gyrotron contributions
-    for igyro in range(NGYROS):
-        gyro_curves[igyro].setData(psin, EOXBEST['data'][idx, igyro, :])
+    for i, igyro in enumerate(PLOT_GYROS):
+        gyro_curves[i].setData(psin, EOXBEST['data'][idx, igyro-1, :])
     
     # Update labels
     time_label.setText(f"Time: {timeslices[idx]:.4f} s")
