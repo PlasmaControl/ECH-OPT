@@ -133,12 +133,12 @@ slider_layout.addWidget(index_label)
 def update_plots(idx):
     """Update plots based on slider value"""
     # Update plot 1: total vs target
-    curve_total.setData(psin, total_profile[idx, :])
-    curve_target.setData(psin, EOXTARGET['data'][idx, :])
+    curve_total.setData(psin, total_profile[idx, :] / 1e6)
+    curve_target.setData(psin, EOXTARGET['data'][idx, :] / 1e6)
     
     # Update plot 2: individual gyrotron contributions
     for i, igyro in enumerate(PLOT_GYROS):
-        gyro_curves[i].setData(psin, EOXBEST['data'][idx, igyro-1, :])
+        gyro_curves[i].setData(psin, EOXBEST['data'][idx, igyro-1, :] / 1e6)
     
     # Update labels
     time_label.setText(f"Time: {timeslices[idx]:.4f} s")
