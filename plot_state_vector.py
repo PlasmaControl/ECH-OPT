@@ -25,12 +25,16 @@ psin = np.linspace(0, 1.0, NYOUT_PTS)
 try:
     EOXTARGET = toksearch.PtDataSignal('EOXTARGET').fetch(shot)
 except:
-    EOXTARGET = np.ones((20, NYOUT_PTS)) * 1e6  # Dummy target if not found
+    # Dummy target if not found
+    EOXTARGET = {'data': np.ones((20, NYOUT_PTS)) * 1e6,
+                 'times': np.linspace(0, 1, 20)}  
 
 try:
     EOXBEST = toksearch.PtDataSignal('EOXBEST').fetch(shot)
 except:
-    EOXBEST = 1.1 * np.ones((20, NGYROS, NYOUT_PTS)) * 1e6  # Dummy best if not found
+    # Dummy best if not found
+    EOXBEST = {'data': 1.1 * np.ones((20, NGYROS, NYOUT_PTS)) * 1e6,
+               'times': np.linspace(0, 1, 20)}  
     
 print('Source shot:', shot)
 print('Raw size of yout:', EOXBEST['data'].shape)
